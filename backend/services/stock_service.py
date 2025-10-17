@@ -32,3 +32,26 @@ def get_multiple_stocks(symbols: list):
         stock_data = get_stock(symbol)
         data.append(stock_data)
     return data
+
+
+def get_historical(symbol: str, period: str = "6mo", interval: str = "1d"):
+    try:
+        ticker = yf.Ticker(symbol)
+        hist = ticker.history(period=period, interval=interval)
+        hist = hist.reset_index()
+        # Normalize to simple list of OHLCV dicts
+        records = []
+        for _, row in hist.iterrows():
+            records.append(
+                {
+                    "date": getattr(row, "Date", getattr(row, "Datetime", None)).isoformat(),
+                    "open": float(row["Open"]),
+                    "high": float(row["High"]),
+                    "low": float(row["Low"]),
+                    "close": float(row["Close"]),
+                    "volume": int(row["Volume"]) if not pd.isna(row["Volume"]) else None,
+                }
+            )
+        return {"symbol": symbol, "candles": records}
+    except Exception as e:
+        return {"error": str(e)}
