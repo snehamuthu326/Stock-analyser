@@ -18,7 +18,7 @@ jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(stock_bp, url_prefix="/api")
 app.register_blueprint(watchlist_bp, url_prefix="/api")
 app.register_blueprint(notification_bp, url_prefix="/api")
