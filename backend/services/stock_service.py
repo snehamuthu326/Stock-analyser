@@ -11,14 +11,27 @@ def get_stock(symbol: str):
         info = stock.info
         current_price = info.get("regularMarketPrice")
         previous_close = info.get("previousClose")
+        day_high = info.get("dayHigh")
+        day_low = info.get("dayLow")
         name = info.get("shortName")
         sector = info.get("sector")
+
+        # Keep existing keys for compatibility and add new ones expected by frontend
         return {
+            # Core identity
             "symbol": symbol,
             "name": name,
+            "sector": sector,
+
+            # Old keys (existing clients)
             "current_price": current_price,
             "previous_close": previous_close,
-            "sector": sector
+
+            # New keys (Dashboard expectations)
+            "price": current_price,
+            "previousClose": previous_close,
+            "high": day_high,
+            "low": day_low,
         }
     except Exception as e:
         return {"error": str(e)}
